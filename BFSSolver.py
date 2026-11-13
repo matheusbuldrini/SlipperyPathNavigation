@@ -2,6 +2,7 @@ from Node import Node
 from Solver import Solver
 from typing import Literal, cast
 import numpy as np
+from collections import deque
 
 GOAL = b'G'
 HOLE = b'H'
@@ -22,6 +23,8 @@ class BFSSolver(Solver):
 
     def __init__(self, gym_env):
         super().__init__(gym_env)
+        self.nodes = {}
+        self.current_action_index = 0
         self.map = self.gym_env.unwrapped.desc
         self.map_height, self.map_width = self.map.shape
         print("BFSSolver initialized with map:")
@@ -31,13 +34,14 @@ class BFSSolver(Solver):
         print(self.map)
         print("solving...")
         solution = self.BFS()
+        if solution is None:
+            raise ValueError("No path to goal found!")
         print("path:")
         print(self.get_path_to_node(solution))
         print("actions:")
         self.actions = self.path_to_actions(self.get_path_to_node(solution))
         print(self.actions)
 
-    current_action_index = 0
     def get_next_action(self) -> Literal[0, 1, 2, 3]:
         action = self.actions[self.current_action_index]
         self.current_action_index += 1
@@ -57,8 +61,6 @@ class BFSSolver(Solver):
             elif next_node.y == current_node.y - 1:
                 actions.append(3)  # up
         return actions
-
-    nodes = {}
     def get_or_create_node(self, x, y, parent=None):
         if (x, y) not in self.nodes:
             self.nodes[(x, y)] = Node(x, y, parent=parent)
@@ -80,26 +82,27 @@ class BFSSolver(Solver):
         return self.map[node.y][node.x] == HOLE
 
     def get_neighbors(self, node):
-        neighbors = set()
+        neighbors = []
         if node.x + 1 < self.map_width:
-            neighbors.add(self.get_or_create_node(node.x+1, node.y, parent=node))
+            neighbors.append(self.get_or_create_node(node.x+1, node.y, parent=node))
         if node.x - 1 >= 0:
-            neighbors.add(self.get_or_create_node(node.x-1, node.y, parent=node))
+            neighbors.append(self.get_or_create_node(node.x-1, node.y, parent=node))
         if node.y + 1 < self.map_height:
-            neighbors.add(self.get_or_create_node(node.x, node.y+1, parent=node))
+            neighbors.append(self.get_or_create_node(node.x, node.y+1, parent=node))
         if node.y - 1 >= 0:
-            neighbors.add(self.get_or_create_node(node.x, node.y-1, parent=node))
+            neighbors.append(self.get_or_create_node(node.x, node.y-1, parent=node))
         return neighbors
 
     def expand(self, node):
-        children = set()
+        children = []
         for n in self.get_neighbors(node):
             if self.is_hole(n) == False:
-                children.add(n)
+                children.append(n)
         return children
     
     def BFS(self):
-        frontier = []
+        self.nodes.clear()
+        frontier = deque()
         reached = set()
         node = self.get_or_create_node(*self.get_position())
         if self.is_goal(node):
@@ -107,7 +110,7 @@ class BFSSolver(Solver):
         frontier.append(node)
         reached.add(node)
         while len(frontier) > 0:
-            node = frontier.pop()
+            node = frontier.popleft()
             for child in self.expand(node):
                 if self.is_goal(child):
                     return child
