@@ -6,7 +6,7 @@ from HumanSolver import HumanSolver
 from Solver import Solver
 
 
-def init_env(map_size = 4, is_slippery = True, success_rate = 1.0, seed = 0):
+def init_env(map_size = 80, is_slippery = True, success_rate = 1.0, seed = 0):
     env = gymnasium.make(
             'FrozenLake-v1',
             render_mode="human",
@@ -14,31 +14,39 @@ def init_env(map_size = 4, is_slippery = True, success_rate = 1.0, seed = 0):
             map_name=None,
             is_slippery=is_slippery,
             success_rate=success_rate,
-            reward_schedule=(1, 0, 0)
+            reward_schedule=(1, 0, 0),
+            max_episode_steps=100000
             )
     env.reset(seed=seed)
+    env.unwrapped.metadata["render_fps"] = 240
     return env
 
 
-def run(solver: Callable[..., Solver] = HumanSolver, steps=1000, seed = 0):
-    env = init_env(seed=seed)
+def run(solver: Callable[..., Solver] = HumanSolver):
+    cost = 0
+    env = init_env()
     solver_instance = solver(env)
-    for _ in range(steps):
+    while True:
         env.render()
         observation, reward, terminated, truncated, info = env.step(solver_instance.get_next_action())
-        
+        cost += 1
         if float(reward) > 0:
             print("reward received!")
-            break
+            print(f"Total steps taken: {cost}")
+            env.close()
+            return True, cost
 
         if terminated:
             print("terminated!")
-            break
+            print(f"Total steps taken: {cost}")
+            env.close()
+            return False, cost
 
         if truncated:
             print("truncated!")
-            break
+            print(f"Total steps taken: {cost}")
+            env.close()
+            return False, cost
 
-    env.close()
-
-run(BFSSolver, seed=0)
+success, cost = run(BFSSolver)
+print(f"Success: {success}, Cost: {cost}")
