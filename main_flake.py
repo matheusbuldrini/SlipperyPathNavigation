@@ -1,9 +1,10 @@
 import gymnasium
 from gymnasium.envs.toy_text.frozen_lake import generate_random_map
-
-
-# from BFSSolver import BFSSolver
+from typing import Callable
+from BFSSolver import BFSSolver
 from HumanSolver import HumanSolver
+from Solver import Solver
+
 
 def init_env(map_size = 4, is_slippery = True, success_rate = 1.0, seed = 0):
     env = gymnasium.make(
@@ -19,12 +20,12 @@ def init_env(map_size = 4, is_slippery = True, success_rate = 1.0, seed = 0):
     return env
 
 
-def run(steps=1000, seed = 0):
+def run(solver: Callable[..., Solver] = HumanSolver, steps=1000, seed = 0):
     env = init_env(seed=seed)
-    solver = HumanSolver(env)
+    solver_instance = solver(env)
     for _ in range(steps):
         env.render()
-        observation, reward, terminated, truncated, info = env.step(solver.get_next_action())
+        observation, reward, terminated, truncated, info = env.step(solver_instance.get_next_action())
         
         if float(reward) > 0:
             print("reward received!")
@@ -40,4 +41,4 @@ def run(steps=1000, seed = 0):
 
     env.close()
 
-run(seed=0)
+run(BFSSolver, seed=0)
