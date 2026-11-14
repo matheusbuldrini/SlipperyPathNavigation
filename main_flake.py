@@ -53,13 +53,13 @@ def run(solver: Callable[..., Solver], map, solver_args, env_args):
 
 solvers = [
     # (HumanSolver, {}),
-    (BFSSolver, {}),
-    (DijkstraSolver, {}),
-    (AStarSolver, {}),
-    (AStarWeightedSolver, {"weight": 1.5}),
-    (AStarWeightedSolver, {"weight": 2.0}),
-    (AStarWeightedSolver, {"weight": 2.5}),
-    (AStarWeightedSolver, {"weight": 3.0}),
+    (BFSSolver, {}, {"is_slippery": False}),
+    (DijkstraSolver, {}, {"is_slippery": False}),
+    (AStarSolver, {}, {"is_slippery": False}),
+    (AStarWeightedSolver, {"weight": 1.5}, {"is_slippery": False}),
+    (AStarWeightedSolver, {"weight": 2.0}, {"is_slippery": False}),
+    (AStarWeightedSolver, {"weight": 2.5}, {"is_slippery": False}),
+    (AStarWeightedSolver, {"weight": 3.0}, {"is_slippery": False}),
     (AndOrSolver, {}, {"is_slippery": False}),
     #(AndOrSolver, {}, {"is_slippery": True, "success_rate": 0.8}),
     ]
