@@ -34,3 +34,22 @@ map_DijkstraVsBFS_2 = [
     ['H', 'F', 'F', 'F', 'H', 'H', 'F', 'F', 'H', 'H', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F'],
     ['F', 'F', 'H', 'H', 'F', 'F', 'H', 'F', 'H', 'H', 'H', 'H', 'F', 'F', 'F', 'H', 'H', 'F', 'F', 'G'],
 ]
+
+
+map_bad_for_AndOrSolver = [
+            "SFFFHHFFFFFFFFH",
+            "FFHHHFFHHHFFHFH",
+            "HFHFHHFFHFFFHHF",
+            "FFFHHHFFFFHFHFF",
+            "HFHHFFFHFFFFFHH",
+            "FFFFFHFFFFFHHHF",
+            "HHFFFFHFFFFFHFF",
+            "FFFFFFFFFFFFFFF",
+            "FFFFFFHFFFHFFFH",
+            "FFFFHFHHFHHFFHH",
+            "HFHFFFFHFFFHHHF",
+            "FHFFFHFFHFFFFHF",
+            "HFFFFHFFFFFHFHH",
+            "HFFFFFFFHFFHFHF",
+            "HFHFFFFFHFHFFFG",
+        ]
