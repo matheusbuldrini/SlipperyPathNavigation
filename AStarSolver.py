@@ -31,7 +31,7 @@ class AStarSolver(Solver):
         self.current_action_index = 0
         self.map = self.gym_env.unwrapped.desc
         self.map_height, self.map_width = self.map.shape
-        goal_x, goal_y = np.where(self.map == GOAL)
+        goal_y, goal_x = np.where(self.map == GOAL)
         self.goal_x = goal_x[0]
         self.goal_y = goal_y[0]
         if DEBUG: print(f"{self.__class__.__name__} initialized with map:")
