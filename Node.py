@@ -1,5 +1,5 @@
 class Node:
-    def __init__(self, x, y, parent=None, cost=1):
+    def __init__(self, x, y, parent=None, cost=0.0):
         self.x = x
         self.y = y
         self.parent = parent
@@ -16,3 +16,8 @@ class Node:
     
     def __repr__(self):
         return str(self)
+    
+    def __lt__(self, other):
+        if not isinstance(other, Node):
+            return NotImplemented
+        return self.cost < other.cost
