@@ -34,7 +34,7 @@ class AStarSolver(Solver):
         goal_x, goal_y = np.where(self.map == GOAL)
         self.goal_x = goal_x[0]
         self.goal_y = goal_y[0]
-        if DEBUG: print("AStarSolver initialized with map:")
+        if DEBUG: print(f"{self.__class__.__name__} initialized with map:")
         if DEBUG: print("map height:", self.map_height)
         if DEBUG: print("map width:", self.map_width)
         if DEBUG: print("initial position x and y:", self.get_position())
@@ -48,7 +48,7 @@ class AStarSolver(Solver):
         if DEBUG: print("actions:")
         self.actions = self.path_to_actions(self.get_path_to_node(solution))
         if DEBUG: print(self.actions)
-        print("AStarSolver: nodes expanded:", self.nodes_expanded)
+        print(f"{self.__class__.__name__}: nodes expanded:", self.nodes_expanded)
 
     def get_next_action(self) -> Literal[0, 1, 2, 3]:
         action = self.actions[self.current_action_index]
