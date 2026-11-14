@@ -27,6 +27,7 @@ class DijkstraSolver(Solver):
     def __init__(self, gym_env):
         super().__init__(gym_env)
         self.nodes = {}
+        self.nodes_expanded = 0
         self.current_action_index = 0
         self.map = self.gym_env.unwrapped.desc
         self.map_height, self.map_width = self.map.shape
@@ -44,6 +45,7 @@ class DijkstraSolver(Solver):
         if DEBUG: print("actions:")
         self.actions = self.path_to_actions(self.get_path_to_node(solution))
         if DEBUG: print(self.actions)
+        print("DijkstraSolver: nodes expanded:", self.nodes_expanded)
 
     def get_next_action(self) -> Literal[0, 1, 2, 3]:
         action = self.actions[self.current_action_index]
@@ -119,6 +121,7 @@ class DijkstraSolver(Solver):
         return neighbors
 
     def expand(self, node):
+        self.nodes_expanded += 1
         children = []
         for n in self.get_neighbors(node):
             if self.is_hole(n) == False:
