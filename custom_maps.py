@@ -12,6 +12,24 @@ map_DijkstraVsBFS = [
     "FFFFFFHG",
 ]
 
+map_4x4 = [
+    "SFFF",
+    "FHFH",
+    "FFFH",
+    "HFFG"
+]
+
+map_8x8 = [
+    "SFFFFFFF",
+    "FFFFFFFF",
+    "FFFHFFFF",
+    "FFFFFHFF",
+    "FFFHFFFF",
+    "FHHFFFHF",
+    "FHFFHFHF",
+    "FFFHFFFG",
+]
+
 map_DijkstraVsBFS_2 = [
     ['S', 'F', 'F', 'F', 'H', 'F', 'F', 'F', 'F', 'H', 'H', 'F', 'F', 'F', 'H', 'H', 'F', 'F', 'F', 'F'],
     ['F', 'H', 'H', 'F', 'F', 'H', 'H', 'F', 'H', 'F', 'H', 'H', 'F', 'H', 'F', 'F', 'F', 'F', 'F', 'F'],
