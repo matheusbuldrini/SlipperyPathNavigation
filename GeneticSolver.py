@@ -53,8 +53,8 @@ class GeneticSolver(Solver):
             return cast(Literal[0, 1, 2, 3], action)
         raise EOFError("No actions!")
 
-    population_size = 100
-    max_gens = 400
+    population_size = 20 #TODO
+    max_gens = 40 #TODO
     possible_actions = [0, 1, 2, 3]
 
     # individual = tuple(action1, action2, action3, ... , actionN)

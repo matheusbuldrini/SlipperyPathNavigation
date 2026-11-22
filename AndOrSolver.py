@@ -79,6 +79,8 @@ class AndOrSolver(Solver):
         return self.or_search(self.get_position(), set())
 
     def or_search(self, state, path):
+        if self.nodes_expanded >= 1000 * self.map_height * self.map_width: #TODO
+            return None
         if self.is_goal(state):
             return {}
         if self.is_cycle(state, path):
