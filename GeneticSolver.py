@@ -39,9 +39,12 @@ class GeneticSolver(Solver):
         self.current_plan = None
         if DEBUG: print("best:")
         if DEBUG: print(best)
-        self.actions = list(best[0])
+        planning_succeeded = best[1] >= INF / 2
+        self.actions = list(best[0]) if planning_succeeded else []
+        self.metrics["planning_succeeded"] = planning_succeeded
+        self.metrics["nodes_expanded"] = None
         if DEBUG: print("list of actions=" + str(self.actions))
-        if best[1] < INF/2:
+        if not planning_succeeded:
             if DEBUG: print("could not solve")
 
     def get_next_action(self) -> Literal[0, 1, 2, 3]:
@@ -137,6 +140,7 @@ class GeneticSolver(Solver):
             if DEBUG: print(gen_number)
             for individual in population:
                 self.gym_env.reset(seed=0) # for now, keep the same seed so we can run the GA in the same map and the actions have the same result
+                self.metrics["planning_simulation_count"] += 1
 
                 # fitness1 = INF - steps    if reached goal 
                 #            steps          otherwise

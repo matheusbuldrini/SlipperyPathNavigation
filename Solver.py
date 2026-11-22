@@ -4,12 +4,17 @@ import gymnasium
 
 
 class Solver(ABC):
-    
-    metrics: dict = {}
     DEBUG = False
 
     def __init__(self, env_config):
         self.env_config = env_config
+
+        self.metrics = {
+            "planning_succeeded": False,
+            "planning_time_seconds": 0.0,
+            "nodes_expanded": None,
+            "planning_simulation_count": 0,
+        }
         self.gym_env = gymnasium.make(
             'FrozenLake-v1',
             reward_schedule=(1, -1, 0), # goal, hole, normal
@@ -25,8 +30,11 @@ class Solver(ABC):
         metrics = {
             "success": False,
             "number_of_actions": 0,
-            "total_reward": 0
+            "total_reward": 0.0,
         }
+
+        if not self.metrics["planning_succeeded"]:
+            return {**metrics, **self.metrics}
 
         observation, _ = self.gym_env.reset(seed=env_config["seed"])
 

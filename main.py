@@ -11,6 +11,7 @@ from DFSSolver import DFSSolver
 from IDSSolver import IDSSolver
 import pprint
 from datetime import datetime
+from time import perf_counter
 
 
 RENDER = False
@@ -97,7 +98,9 @@ for env_config in ENV_CONFIGS:
     for solver, solver_args in solvers:
         solver_name = _get_solver_name(solver, solver_args)
         print(f"Running {solver_name}")
+        planning_start = perf_counter()
         solver_instance = solver(env_config, **solver_args)
+        solver_instance.metrics["planning_time_seconds"] = perf_counter() - planning_start
         metrics = solver_instance.evaluate(env_config)
         result={
             "solver": solver_name,

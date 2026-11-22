@@ -37,12 +37,15 @@ class BFSSolver(Solver):
         if DEBUG: print("solving...")
         solution = self.BFS()
         if solution is None:
-            raise ValueError("No path to goal found!")
-        if DEBUG: print("path:")
-        if DEBUG: print(self.get_path_to_node(solution))
-        if DEBUG: print("actions:")
-        self.actions = self.path_to_actions(self.get_path_to_node(solution))
-        if DEBUG: print(self.actions)
+            self.actions = []
+        else:
+            if DEBUG: print("path:")
+            if DEBUG: print(self.get_path_to_node(solution))
+            if DEBUG: print("actions:")
+            self.actions = self.path_to_actions(self.get_path_to_node(solution))
+            if DEBUG: print(self.actions)
+        self.metrics["planning_succeeded"] = solution is not None
+        self.metrics["nodes_expanded"] = self.nodes_expanded
         if DEBUG: print("BFSSolver: nodes expanded:", self.nodes_expanded)
 
     def get_next_action(self) -> Literal[0, 1, 2, 3]:
@@ -99,7 +102,6 @@ class BFSSolver(Solver):
         return neighbors
 
     def expand(self, node):
-        self.nodes_expanded += 1
         children = []
         for n in self.get_neighbors(node):
             if self.is_hole(n) == False:
@@ -117,6 +119,7 @@ class BFSSolver(Solver):
         reached.add(node)
         while len(frontier) > 0:
             node = frontier.popleft()
+            self.nodes_expanded += 1
             for child in self.expand(node):
                 if self.is_goal(child):
                     return child

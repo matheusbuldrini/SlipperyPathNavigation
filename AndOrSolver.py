@@ -34,6 +34,8 @@ class AndOrSolver(Solver):
         if DEBUG: print("solving...")
         self.plan = self.and_or_search()
         self.current_plan = None
+        self.metrics["planning_succeeded"] = self.plan is not None
+        self.metrics["nodes_expanded"] = self.nodes_expanded
         if DEBUG: print("solution:")
         if DEBUG: print(self.plan)
 
@@ -83,6 +85,7 @@ class AndOrSolver(Solver):
             return None
         if self.is_hole(state):
             return None
+        self.nodes_expanded += 1
         for action in self.get_actions(state):
             result = self.get_possible_outcomes(state, action)
             path_plus_state = path.union({state})
