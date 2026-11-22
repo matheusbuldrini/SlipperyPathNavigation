@@ -9,10 +9,10 @@ from GeneticSolver import GeneticSolver
 from GreedySolver import GreedySolver
 from DFSSolver import DFSSolver
 from IDSSolver import IDSSolver
-import pprint
 from datetime import datetime
 from time import perf_counter
-
+from tqdm import tqdm
+import json
 
 RENDER = False
 
@@ -94,26 +94,28 @@ def _get_solver_name(solver, args):
     return solver.__name__
 
 RESULTS = []
-for env_config in ENV_CONFIGS:
-    for solver, solver_args in solvers:
-        solver_name = _get_solver_name(solver, solver_args)
-        print(f"Running {solver_name}")
-        planning_start = perf_counter()
-        solver_instance = solver(env_config, **solver_args)
-        solver_instance.metrics["planning_time_seconds"] = perf_counter() - planning_start
-        metrics = solver_instance.evaluate(env_config)
-        result={
-            "solver": solver_name,
-            "env_config": env_config,
-            "metrics": metrics
-        }
-        # print(result)
-        RESULTS.append(result)
-
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-filename = f"results_{timestamp}.txt"
-
-with open(filename, "w", encoding="utf-8") as results_file:
-    pprint.pprint(RESULTS, stream=results_file)
+filename = f"results_{timestamp}.jsonl"
+with open(filename, "a", encoding="utf-8") as results_file:
+    with tqdm(total=len(ENV_CONFIGS) * len(solvers), desc="Progress") as progress_bar:
+        for env_config in ENV_CONFIGS:
+            for solver, solver_args in solvers:
+                solver_name = _get_solver_name(solver, solver_args)
+                progress_bar.desc = f"{solver_name} map={env_config["map_name"]}"
+                progress_bar.update(0)
+                planning_start = perf_counter()
+                solver_instance = solver(env_config, **solver_args)
+                solver_instance.metrics["planning_time_seconds"] = perf_counter() - planning_start
+                metrics = solver_instance.evaluate(env_config)
+                result={
+                    "solver": solver_name,
+                    "env_config": env_config,
+                    "metrics": metrics
+                }
+                # print(result)
+                RESULTS.append(result)
+                results_file.write(json.dumps(result, ensure_ascii=False) + "\n")
+                progress_bar.update(1)
+            results_file.flush()
 
 print(f"Results saved in {filename}")
