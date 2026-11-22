@@ -8,6 +8,9 @@ from BFSSolver import BFSSolver
 from HumanSolver import HumanSolver
 from DijkstraSolver import DijkstraSolver
 from GeneticSolver import GeneticSolver
+from GreedySolver import GreedySolver
+from DFSSolver import DFSSolver
+from IDSSolver import IDSSolver
 from Solver import Solver
 from custom_maps import *
 
@@ -58,12 +61,15 @@ def run(solver: Callable[..., Solver], map, solver_args, env_args):
 solvers = [
     # (HumanSolver, {}),
     (BFSSolver, {}, {"is_slippery": False}),
+    (DFSSolver, {}, {"is_slippery": False}),
+    (IDSSolver, {}, {"is_slippery": False}),
     (DijkstraSolver, {}, {"is_slippery": False}),
     (AStarSolver, {}, {"is_slippery": False}),
     (AStarWeightedSolver, {"weight": 1.5}, {"is_slippery": False}),
     (AStarWeightedSolver, {"weight": 2.0}, {"is_slippery": False}),
     (AStarWeightedSolver, {"weight": 2.5}, {"is_slippery": False}),
     (AStarWeightedSolver, {"weight": 3.0}, {"is_slippery": False}),
+    (GreedySolver, {}, {"is_slippery": False}),
     (AndOrSolver, {}, {"is_slippery": False}),
     #(AndOrSolver, {}, {"is_slippery": True, "success_rate": 0.8}),
     (GeneticSolver, {}, {"is_slippery": True, "success_rate": 0.8, "seed":0}),
@@ -78,4 +84,3 @@ for i in range(1):
         success, steps, cost = run(solver, map=map, solver_args=solver_args, env_args=env_args)
         print(f"Success: {"YES" if success else "!!!FAILURE!!!"}, steps: {steps}, cost: {cost}")
     print("--------------------------------------------------")
-        
