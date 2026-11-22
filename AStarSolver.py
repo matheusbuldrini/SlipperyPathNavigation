@@ -28,7 +28,6 @@ class AStarSolver(Solver):
         super().__init__(gym_env)
         self.nodes = {}
         self.nodes_expanded = 0
-        self.current_action_index = 0
         self.map = self.gym_env.unwrapped.desc
         self.map_height, self.map_width = self.map.shape
         goal_y, goal_x = np.where(self.map == GOAL)
@@ -48,12 +47,13 @@ class AStarSolver(Solver):
         if DEBUG: print("actions:")
         self.actions = self.path_to_actions(self.get_path_to_node(solution))
         if DEBUG: print(self.actions)
-        print(f"{self.__class__.__name__}: nodes expanded:", self.nodes_expanded)
+        if DEBUG: print(f"{self.__class__.__name__}: nodes expanded:", self.nodes_expanded)
 
     def get_next_action(self) -> Literal[0, 1, 2, 3]:
-        action = self.actions[self.current_action_index]
-        self.current_action_index += 1
-        return cast(Literal[0, 1, 2, 3], action)
+        if len(self.actions) > 0:
+            action = self.actions.pop(0)
+            return cast(Literal[0, 1, 2, 3], action)
+        raise EOFError("No actions!")
 
     def path_to_actions(self, path):
         actions = []

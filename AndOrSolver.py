@@ -29,7 +29,7 @@ class AndOrSolver(Solver):
         if DEBUG: print(f"{self.__class__.__name__} initialized with map:")
         if DEBUG: print("map height:", self.map_height)
         if DEBUG: print("map width:", self.map_width)
-        if DEBUG: print("initial position x and y:", self.get_position())
+        if DEBUG: print("initial position:", self.get_position())
         if DEBUG: print(self.map)
         if DEBUG: print("solving...")
         self.plan = self.and_or_search()
@@ -41,7 +41,7 @@ class AndOrSolver(Solver):
         if self.current_plan is None:
             self.current_plan = self.plan
             if self.current_plan is None:
-                raise EOFError("no plan")
+                raise EOFError("No actions!")
         else:
             previous_action = list(self.current_plan.keys())[0]
             current_state = self.get_position()
