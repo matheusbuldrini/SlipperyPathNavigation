@@ -9,6 +9,7 @@ from HumanSolver import HumanSolver
 from DijkstraSolver import DijkstraSolver
 from GeneticSolver import GeneticSolver
 from GreedySolver import GreedySolver
+from DFSSolver import DFSSolver
 from Solver import Solver
 from custom_maps import *
 
@@ -59,6 +60,7 @@ def run(solver: Callable[..., Solver], map, solver_args, env_args):
 solvers = [
     # (HumanSolver, {}),
     (BFSSolver, {}, {"is_slippery": False}),
+    (DFSSolver, {}, {"is_slippery": False}),
     (DijkstraSolver, {}, {"is_slippery": False}),
     (AStarSolver, {}, {"is_slippery": False}),
     (AStarWeightedSolver, {"weight": 1.5}, {"is_slippery": False}),
@@ -80,3 +82,4 @@ for i in range(1):
         success, steps, cost = run(solver, map=map, solver_args=solver_args, env_args=env_args)
         print(f"Success: {"YES" if success else "!!!FAILURE!!!"}, steps: {steps}, cost: {cost}")
     print("--------------------------------------------------")
+        
