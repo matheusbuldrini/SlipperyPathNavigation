@@ -33,9 +33,6 @@ class Solver(ABC):
             "total_reward": 0.0,
         }
 
-        if not self.metrics["planning_succeeded"]:
-            return {**metrics, **self.metrics}
-
         observation, _ = self.gym_env.reset(seed=env_config["seed"])
 
         for _ in range(env_config["max_episode_steps"]):

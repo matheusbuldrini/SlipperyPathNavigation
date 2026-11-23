@@ -3,6 +3,7 @@ from AStarSolver import AStarSolver
 from AStarWeightedSolver import AStarWeightedSolver
 from AndOrSolver import AndOrSolver
 from BFSSolver import BFSSolver
+from GeneticSolverNeural import GeneticSolverNeural
 from HumanSolver import HumanSolver
 from DijkstraSolver import DijkstraSolver
 from GeneticSolver import GeneticSolver
@@ -52,8 +53,8 @@ for map_name, map_desc in MAPS_DICT.items():
                 "desc": map_desc,
                 "is_slippery": False,
                 "success_rate": 1.0,
-                "max_episode_steps": 200, # not used/important for the deterministic case
-                "seed": 12345,
+                "max_episode_steps": max(MAX_EPISODE_STEPS), # not used/important for the deterministic case
+                "seed": 0,
             })
             # slippery
             for max_episode_steps in MAX_EPISODE_STEPS:
@@ -64,7 +65,7 @@ for map_name, map_desc in MAPS_DICT.items():
                         "is_slippery": True,
                         "success_rate": success_rate,
                         "max_episode_steps": max_episode_steps,
-                        "seed": 12345,
+                        "seed": 0,
                     })
 
 
@@ -84,6 +85,9 @@ solvers = [
     (GreedySolver, {}),
     (AndOrSolver, {}),
     (GeneticSolver, {}),
+    (GeneticSolverNeural, {"number_of_hidden_units": 100, "population_size": 200, "max_gens":100,
+                           "mutation_rate":0.05,"mutation_strength":0.1,"random_gen_deviation":0.1,
+                           "early_return":True}),
     ]
 
 def _get_solver_name(solver, args):

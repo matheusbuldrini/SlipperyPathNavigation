@@ -142,6 +142,7 @@ class GeneticSolver(Solver):
                 self.gym_env.reset(seed=0) # for now, keep the same seed so we can run the GA in the same map and the actions have the same result
                 self.metrics["planning_simulation_count"] += 1
 
+                # other options/ideas for fitness
                 # fitness1 = INF - steps    if reached goal 
                 #            steps          otherwise
 
@@ -153,11 +154,11 @@ class GeneticSolver(Solver):
                 reward = 0
                 for action in individual:
                     observation, reward, terminated, truncated, info = self.gym_env.step(action)
-                    if reward > 0 or reward < 0 or terminated or truncated:
+                    if float(reward) > 0 or float(reward) < 0 or terminated or truncated:
                         break
                     steps += 1
 
-                if reward > 0:
+                if float(reward) > 0:
                     new_fitness = INF - steps
                 else:
                     new_fitness = steps
