@@ -31,7 +31,7 @@ class GeneticSolverNeural(Solver):
         self.random = random.Random(x=self.env_config["seed"])
 
         # will use one hot encoding
-        self.input_size = self.map_height * self.map_width
+        self.input_size = self.get_input_size()
         self.number_of_hidden_units = number_of_hidden_units
         self.population_size = population_size
         self.max_gens = max_gens
@@ -58,8 +58,7 @@ class GeneticSolverNeural(Solver):
         self.metrics["nodes_expanded"] = None
 
     def get_next_action(self) -> Literal[0, 1, 2, 3]:
-        nn_input = np.zeros(self.input_size)
-        nn_input[self.get_position()] = 1
+        nn_input = self.get_nn_input(self.get_position())
         action = neural_controller.get_next_action(
                     self.model,
                     nn_input,
@@ -69,6 +68,14 @@ class GeneticSolverNeural(Solver):
                 )
 
         return cast(Literal[0, 1, 2, 3], action)
+
+    def get_input_size(self):
+        return self.map_height * self.map_width
+
+    def get_nn_input(self, position):
+        nn_input = np.zeros(self.input_size)
+        nn_input[position] = 1
+        return nn_input
 
     # individual = model = [w1,w2,...]
     def generate_random_individual(self):
@@ -155,8 +162,7 @@ class GeneticSolverNeural(Solver):
         max_steps = self.env_config["max_episode_steps"]
         for _ in range(max_steps):
 
-            nn_input = np.zeros(self.input_size)
-            nn_input[position] = 1
+            nn_input = self.get_nn_input(position)
             action = neural_controller.get_next_action(
                         model,
                         nn_input,
