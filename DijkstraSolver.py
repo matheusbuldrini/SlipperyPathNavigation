@@ -28,7 +28,6 @@ class DijkstraSolver(Solver):
         super().__init__(gym_env)
         self.nodes = {}
         self.nodes_expanded = 0
-        self.current_action_index = 0
         self.map = self.gym_env.unwrapped.desc
         self.map_height, self.map_width = self.map.shape
         if DEBUG: print("DijkstraSolver initialized with map:")
@@ -39,18 +38,22 @@ class DijkstraSolver(Solver):
         if DEBUG: print("solving...")
         solution = self.Dijkstra()
         if solution is None:
-            raise ValueError("No path to goal found!")
-        if DEBUG: print("path:")
-        if DEBUG: print(self.get_path_to_node(solution))
-        if DEBUG: print("actions:")
-        self.actions = self.path_to_actions(self.get_path_to_node(solution))
-        if DEBUG: print(self.actions)
-        print("DijkstraSolver: nodes expanded:", self.nodes_expanded)
+            self.actions = []
+        else:
+            if DEBUG: print("path:")
+            if DEBUG: print(self.get_path_to_node(solution))
+            if DEBUG: print("actions:")
+            self.actions = self.path_to_actions(self.get_path_to_node(solution))
+            if DEBUG: print(self.actions)
+        self.metrics["planning_succeeded"] = solution is not None
+        self.metrics["nodes_expanded"] = self.nodes_expanded
+        if DEBUG: print("DijkstraSolver: nodes expanded:", self.nodes_expanded)
 
     def get_next_action(self) -> Literal[0, 1, 2, 3]:
-        action = self.actions[self.current_action_index]
-        self.current_action_index += 1
-        return cast(Literal[0, 1, 2, 3], action)
+        if len(self.actions) > 0:
+            action = self.actions.pop(0)
+            return cast(Literal[0, 1, 2, 3], action)
+        raise EOFError("No actions!")
 
     def path_to_actions(self, path):
         actions = []
@@ -121,7 +124,6 @@ class DijkstraSolver(Solver):
         return neighbors
 
     def expand(self, node):
-        self.nodes_expanded += 1
         children = []
         for n in self.get_neighbors(node):
             if self.is_hole(n) == False:
@@ -148,6 +150,7 @@ class DijkstraSolver(Solver):
             reached.add(node)
             if self.is_goal(node):
                 return node
+            self.nodes_expanded += 1
             for child in self.expand(node):
                 if child not in reached:
                     new_cost = node.cost + self.get_tile_cost(child.x, child.y)

@@ -29,11 +29,13 @@ class AndOrSolver(Solver):
         if DEBUG: print(f"{self.__class__.__name__} initialized with map:")
         if DEBUG: print("map height:", self.map_height)
         if DEBUG: print("map width:", self.map_width)
-        if DEBUG: print("initial position x and y:", self.get_position())
+        if DEBUG: print("initial position:", self.get_position())
         if DEBUG: print(self.map)
         if DEBUG: print("solving...")
         self.plan = self.and_or_search()
         self.current_plan = None
+        self.metrics["planning_succeeded"] = self.plan is not None
+        self.metrics["nodes_expanded"] = self.nodes_expanded
         if DEBUG: print("solution:")
         if DEBUG: print(self.plan)
 
@@ -41,7 +43,7 @@ class AndOrSolver(Solver):
         if self.current_plan is None:
             self.current_plan = self.plan
             if self.current_plan is None:
-                raise EOFError("no plan")
+                raise EOFError("No actions!")
         else:
             previous_action = list(self.current_plan.keys())[0]
             current_state = self.get_position()
@@ -77,12 +79,15 @@ class AndOrSolver(Solver):
         return self.or_search(self.get_position(), set())
 
     def or_search(self, state, path):
+        if self.nodes_expanded >= 1000 * self.map_height * self.map_width: #TODO
+            return None
         if self.is_goal(state):
             return {}
         if self.is_cycle(state, path):
             return None
         if self.is_hole(state):
             return None
+        self.nodes_expanded += 1
         for action in self.get_actions(state):
             result = self.get_possible_outcomes(state, action)
             path_plus_state = path.union({state})

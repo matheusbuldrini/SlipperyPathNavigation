@@ -35,6 +35,7 @@ class DFSSolver(BFSSolver):
 
         while len(frontier) > 0:
             node = frontier.pop()  # BFS uses popleft() here: that is the only real difference
+            self.nodes_expanded += 1
             for child in self.expand(node):
                 if self.is_goal(child):
                     return child

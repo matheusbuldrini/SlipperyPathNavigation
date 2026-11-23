@@ -42,6 +42,7 @@ class IDSSolver(BFSSolver):
         if self.notebook.get(tile, -1) >= fuel:
             return None
         self.notebook[tile] = fuel
+        self.nodes_expanded += 1
 
         for child in self.expand(node):
             result = self.depth_limited(child, fuel - 1)

@@ -23,15 +23,10 @@ class GeneticSolver(Solver):
 
     def __init__(self, gym_env):
         super().__init__(gym_env)
-        self.nodes = {}
-        self.nodes_expanded = 0
-        self.current_action_index = 0
         self.map = self.gym_env.unwrapped.desc
         self.map_height, self.map_width = self.map.shape
         
         self.max_actions_per_individual = self.map_height * self.map_height
-        
-        self.current_action_index = 0
 
         self.random = random.Random(x=0)
         if DEBUG: print(f"{self.__class__.__name__} initialized with map:")
@@ -42,22 +37,24 @@ class GeneticSolver(Solver):
         if DEBUG: print("solving...")
         best = self.genetic()
         self.current_plan = None
-        print("best:")
-        print(best)
-        self.actions = list(best[0])
-        print("list of actions=" + str(self.actions))
-        if best[1] < INF/2:
-            print("could not solve")
+        if DEBUG: print("best:")
+        if DEBUG: print(best)
+        planning_succeeded = best[1] >= INF / 2
+        self.actions = list(best[0]) if planning_succeeded else []
+        self.metrics["planning_succeeded"] = planning_succeeded
+        self.metrics["nodes_expanded"] = None
+        if DEBUG: print("list of actions=" + str(self.actions))
+        if not planning_succeeded:
+            if DEBUG: print("could not solve")
 
     def get_next_action(self) -> Literal[0, 1, 2, 3]:
-        action = self.actions[self.current_action_index]
-        print(f"{self.current_action_index} -> {action}")
-        self.current_action_index += 1
-        print(action)
-        return cast(Literal[0, 1, 2, 3], action)
+        if len(self.actions) > 0:
+            action = self.actions.pop(0)
+            return cast(Literal[0, 1, 2, 3], action)
+        raise EOFError("No actions!")
 
-    population_size = 100
-    max_gens = 400
+    population_size = 20 #TODO
+    max_gens = 40 #TODO
     possible_actions = [0, 1, 2, 3]
 
     # individual = tuple(action1, action2, action3, ... , actionN)
@@ -90,7 +87,7 @@ class GeneticSolver(Solver):
     # receives tuple(action1, actionN)
     # should return just the tuple of actions (not with the fitness)
     def mutate(self, actions):
-        rate = 0.90
+        rate = 0.1 #TODO
         new_actions = list(actions)
 
         for i in range(len(new_actions)):
@@ -112,7 +109,7 @@ class GeneticSolver(Solver):
         # keep best (elitism)
         # for later, increase to K-best?
         best = self.get_best(population, 1)[0]
-        print("best" + str(best))
+        if DEBUG: print("best" + str(best))
         new_pop[best[0]]=best[1]
 
         while len(new_pop) < self.population_size and counter < limit:
@@ -125,7 +122,7 @@ class GeneticSolver(Solver):
                 new_pop[child_actions] = 0
 
         if len(new_pop) < self.population_size:
-            print("coul not fully generate next gen. too much duplicated children")
+            if DEBUG: print("coul not fully generate next gen. too much duplicated children")
 
         return new_pop
  
@@ -140,9 +137,10 @@ class GeneticSolver(Solver):
             population[individual] = 0 # init fitness = 0
 
         for gen_number in range(self.max_gens):
-            print(gen_number)
+            if DEBUG: print(gen_number)
             for individual in population:
                 self.gym_env.reset(seed=0) # for now, keep the same seed so we can run the GA in the same map and the actions have the same result
+                self.metrics["planning_simulation_count"] += 1
 
                 # fitness1 = INF - steps    if reached goal 
                 #            steps          otherwise
@@ -167,18 +165,18 @@ class GeneticSolver(Solver):
 
             # print population
             for individual,fitness in population.items():
-                print(f"{fitness}: {individual}")
+                if DEBUG: print(f"{fitness}: {individual}")
 
             # select parents
             parents = self.select_parents(population, 2)
-            print("selected parents:")
+            if DEBUG: print("selected parents:")
             for parent in parents:
-                print("\t"+str(parent))
+                if DEBUG: print("\t"+str(parent))
 
             next_gen = self.get_next_gen(population)
-            print("next gen:")
+            if DEBUG: print("next gen:")
             for c in next_gen:
-                print("\t"+str(c))
+                if DEBUG: print("\t"+str(c))
 
             #last gen
             if gen_number == self.max_gens -1:

@@ -43,6 +43,7 @@ class GreedySolver(AStarSolver):
 
             if self.is_goal(node):
                 return node
+            self.nodes_expanded += 1
 
             for child in self.expand(node):
                 # Greedy adds each tile only once: the first time it sees it.
