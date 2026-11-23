@@ -28,8 +28,6 @@ class AStarSolver(Solver):
         super().__init__(gym_env)
         self.nodes = {}
         self.nodes_expanded = 0
-        self.map = self.gym_env.unwrapped.desc
-        self.map_height, self.map_width = self.map.shape
         goal_y, goal_x = np.where(self.map == GOAL)
         self.goal_x = goal_x[0]
         self.goal_y = goal_y[0]

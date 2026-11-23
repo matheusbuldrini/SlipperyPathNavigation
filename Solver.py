@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Literal
 import gymnasium
+import numpy as np
 
+GOAL = b'G'
 
 class Solver(ABC):
     DEBUG = False
@@ -24,6 +26,13 @@ class Solver(ABC):
             success_rate= env_config["success_rate"],
             max_episode_steps=env_config["max_episode_steps"],
         )
+
+        self.map = self.gym_env.unwrapped.desc
+        self.map_height, self.map_width = self.map.shape
+        goal_y, goal_x = np.where(self.map == GOAL)
+        self.goal_x = goal_x[0]
+        self.goal_y = goal_y[0]
+
         self.gym_env.reset(seed=self.env_config["seed"])
 
     def evaluate(self, env_config, **solver_args) -> dict:
@@ -31,6 +40,7 @@ class Solver(ABC):
             "success": False,
             "number_of_actions": 0,
             "total_reward": 0.0,
+            "distance_to_goal": -1
         }
 
         observation, _ = self.gym_env.reset(seed=env_config["seed"])
@@ -62,6 +72,11 @@ class Solver(ABC):
                 metrics["success"]= False
                 break
         
+        x = int(observation % self.map_width)
+        y = int(observation / self.map_width)
+        dist = abs(x - self.goal_x) + abs(y - self.goal_y)
+
+        metrics["distance_to_goal"] = int(dist)
         return {**metrics, **self.metrics}
 
     @abstractmethod

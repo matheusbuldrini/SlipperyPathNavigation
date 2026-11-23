@@ -23,8 +23,6 @@ class AndOrSolver(Solver):
         self.nodes = {}
         self.nodes_expanded = 0
         self.current_action_index = 0
-        self.map = self.gym_env.unwrapped.desc
-        self.map_height, self.map_width = self.map.shape
 
         if DEBUG: print(f"{self.__class__.__name__} initialized with map:")
         if DEBUG: print("map height:", self.map_height)

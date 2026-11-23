@@ -25,8 +25,6 @@ class GeneticSolverNeural(Solver):
                  mutation_rate,mutation_strength,random_gen_deviation,
                  early_return):
         super().__init__(gym_env)
-        self.map = self.gym_env.unwrapped.desc
-        self.map_height, self.map_width = self.map.shape
         
         self.random = random.Random(x=self.env_config["seed"])
 
@@ -246,5 +244,5 @@ class GeneticSolverNeural(Solver):
                 population = next_gen
 
         best = self.get_best(population, 1)[0]
-        print(f"best fitness = {best[1]}")
+        #print(f"best fitness = {best[1]}")
         return best

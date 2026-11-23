@@ -28,8 +28,6 @@ class DijkstraSolver(Solver):
         super().__init__(gym_env)
         self.nodes = {}
         self.nodes_expanded = 0
-        self.map = self.gym_env.unwrapped.desc
-        self.map_height, self.map_width = self.map.shape
         if DEBUG: print("DijkstraSolver initialized with map:")
         if DEBUG: print("map height:", self.map_height)
         if DEBUG: print("map width:", self.map_width)

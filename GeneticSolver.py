@@ -23,8 +23,6 @@ class GeneticSolver(Solver):
 
     def __init__(self, gym_env):
         super().__init__(gym_env)
-        self.map = self.gym_env.unwrapped.desc
-        self.map_height, self.map_width = self.map.shape
         
         self.max_actions_per_individual = self.map_height * self.map_height
 
