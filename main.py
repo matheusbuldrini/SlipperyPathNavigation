@@ -9,6 +9,7 @@ from GeneticSolver import GeneticSolver
 from GreedySolver import GreedySolver
 from DFSSolver import DFSSolver
 from IDSSolver import IDSSolver
+from ValueIterationSolver import ValueIterationSolver
 from datetime import datetime
 from time import perf_counter
 from tqdm import tqdm
@@ -84,6 +85,7 @@ solvers = [
     (GreedySolver, {}),
     (AndOrSolver, {}),
     (GeneticSolver, {}),
+    (ValueIterationSolver, {}),
     ]
 
 def _get_solver_name(solver, args):
