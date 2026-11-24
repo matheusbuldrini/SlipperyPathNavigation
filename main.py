@@ -10,6 +10,7 @@ from GreedySolver import GreedySolver
 from DFSSolver import DFSSolver
 from IDSSolver import IDSSolver
 from ValueIterationSolver import ValueIterationSolver
+from ReplanningAStarSolver import ReplanningAStarSolver
 from datetime import datetime
 from time import perf_counter
 from tqdm import tqdm
@@ -78,6 +79,7 @@ solvers = [
     (IDSSolver, {}),
     (DijkstraSolver, {}),
     (AStarSolver, {}),
+    (ReplanningAStarSolver, {}),
     (AStarWeightedSolver, {"weight": 1.5}),
     (AStarWeightedSolver, {"weight": 2.0}),
     (AStarWeightedSolver, {"weight": 2.5}),
