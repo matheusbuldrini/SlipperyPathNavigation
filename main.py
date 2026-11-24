@@ -26,9 +26,9 @@ RENDER = False
 
 # first, we need to generate all maps to be used. 
 # This will be a fixed list for all agents 
-MAPS_GENERATOR_SEEDS = [0] #, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-MAPS_SIZE = [4, 6] #, 8, 10]
-MAPS_PROB_FROZEN_TILE = [0.6] #, 0.8, 0.9]
+MAPS_GENERATOR_SEEDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+MAPS_SIZE = [4, 6, 8, 10]
+MAPS_PROB_FROZEN_TILE = [0.6, 0.8, 0.9]
 
 
 # generate all possible maps with the above configuration
@@ -43,8 +43,8 @@ for seed in MAPS_GENERATOR_SEEDS:
 print(f"Generated {len(MAPS_DICT)} maps.")
 
 # env config
-SUCCESS_RATES = [0.8] #, 0.6, 0.3]  # only important if SLIPPERY=True
-MAX_EPISODE_STEPS = [50] #[100, 200]
+SUCCESS_RATES = [0.8, 0.6, 0.3]  # only important if SLIPPERY=True
+MAX_EPISODE_STEPS = [50, 100, 200]
 
 ENV_CONFIGS = []
 
