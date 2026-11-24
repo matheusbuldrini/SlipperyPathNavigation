@@ -11,6 +11,7 @@ from GeneticSolver import GeneticSolver
 from GreedySolver import GreedySolver
 from DFSSolver import DFSSolver
 from IDSSolver import IDSSolver
+from ValueIterationSolver import ValueIterationSolver
 from datetime import datetime
 from time import perf_counter
 from tqdm import tqdm
@@ -86,6 +87,7 @@ solvers = [
     (GreedySolver, {}),
     (AndOrSolver, {}),
     (GeneticSolver, {}),
+    (ValueIterationSolver, {}),
     (GeneticSolverNeural, {"number_of_hidden_units": 100, "population_size": 200, "max_gens":100,
                            "mutation_rate":0.05,"mutation_strength":0.1,"random_gen_deviation":0.1,
                            "early_return":True}),
