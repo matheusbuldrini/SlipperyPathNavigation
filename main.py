@@ -87,15 +87,15 @@ solvers = [
     (AStarWeightedSolver, {"weight": 2.5}),
     (AStarWeightedSolver, {"weight": 3.0}),
     (GreedySolver, {}),
-    (AndOrSolver, {}),
-    (GeneticSolver, {}),
+    #(AndOrSolver, {}),
+    #(GeneticSolver, {}),
     (ValueIterationSolver, {}),
-    (GeneticSolverNeural, {"number_of_hidden_units": 100, "population_size": 200, "max_gens":100,
-                           "mutation_rate":0.05,"mutation_strength":0.1,"random_gen_deviation":0.1,
-                           "early_return":True}),
-    (GeneticSolverNeuralWithHoles, {"number_of_hidden_units": 100, "population_size": 80, "max_gens":20,
-                           "mutation_rate":0.5,"mutation_strength":0.1,"random_gen_deviation":10.0,
-                           "early_return":True}),
+    #(GeneticSolverNeural, {"number_of_hidden_units": 100, "population_size": 200, "max_gens":100,
+    #                       "mutation_rate":0.05,"mutation_strength":0.1,"random_gen_deviation":0.1,
+    #                       "early_return":True}),
+    #(GeneticSolverNeuralWithHoles, {"number_of_hidden_units": 100, "population_size": 80, "max_gens":20,
+    #                       "mutation_rate":0.5,"mutation_strength":0.1,"random_gen_deviation":10.0,
+    #                       "early_return":True}),
     ]
 
 def _get_solver_name(solver, args):
