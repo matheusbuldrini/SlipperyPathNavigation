@@ -44,7 +44,12 @@ print(f"Generated {len(MAPS_DICT)} maps.")
 
 # env config
 SUCCESS_RATES = [0.8] #, 0.6, 0.3]  # only important if SLIPPERY=True
-MAX_EPISODE_STEPS = [50] #[100, 200]
+MAX_EPISODE_STEPS = [200] #[50, 100, 200]
+
+# how many games we play per config to measure the win rate
+# (the normal lake gives the same result every time, so 1 game is enough there)
+EVALUATION_GAMES = 100
+EVALUATION_SEED = 1000  # different from the planning seed (0)
 
 ENV_CONFIGS = []
 
@@ -58,6 +63,8 @@ for map_name, map_desc in MAPS_DICT.items():
                 "success_rate": 1.0,
                 "max_episode_steps": max(MAX_EPISODE_STEPS), # not used/important for the deterministic case
                 "seed": 0,
+                "evaluation_games": 1,
+                "evaluation_seed": EVALUATION_SEED,
             })
             # slippery
             for max_episode_steps in MAX_EPISODE_STEPS:
@@ -69,6 +76,8 @@ for map_name, map_desc in MAPS_DICT.items():
                         "success_rate": success_rate,
                         "max_episode_steps": max_episode_steps,
                         "seed": 0,
+                        "evaluation_games": EVALUATION_GAMES,
+                        "evaluation_seed": EVALUATION_SEED,
                     })
 
 
@@ -89,13 +98,13 @@ solvers = [
     (GreedySolver, {}),
     (AndOrSolver, {}),
     (GeneticSolver, {}),
-    (ValueIterationSolver, {}),
     (GeneticSolverNeural, {"number_of_hidden_units": 100, "population_size": 200, "max_gens":100,
                            "mutation_rate":0.05,"mutation_strength":0.1,"random_gen_deviation":0.1,
                            "early_return":True}),
     (GeneticSolverNeuralWithHoles, {"number_of_hidden_units": 100, "population_size": 80, "max_gens":20,
                            "mutation_rate":0.5,"mutation_strength":0.1,"random_gen_deviation":10.0,
                            "early_return":True}),
+    (ValueIterationSolver, {}),
     ]
 
 def _get_solver_name(solver, args):
