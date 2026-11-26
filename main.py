@@ -13,6 +13,8 @@ from DFSSolver import DFSSolver
 from IDSSolver import IDSSolver
 from ValueIterationSolver import ValueIterationSolver
 from ReplanningAStarSolver import ReplanningAStarSolver
+from HillClimbingSolver import HillClimbingSolver
+from SimulatedAnnealingSolver import SimulatedAnnealingSolver
 from datetime import datetime
 from time import perf_counter
 from tqdm import tqdm
@@ -48,7 +50,7 @@ MAX_EPISODE_STEPS = [200] #[50, 100, 200]
 
 # how many games we play per config to measure the win rate
 # (the normal lake gives the same result every time, so 1 game is enough there)
-EVALUATION_GAMES = 100
+EVALUATION_GAMES = 1000
 EVALUATION_SEED = 1000  # different from the planning seed (0)
 
 ENV_CONFIGS = []
@@ -105,6 +107,8 @@ solvers = [
                            "mutation_rate":0.5,"mutation_strength":0.1,"random_gen_deviation":10.0,
                            "early_return":True}),
     (ValueIterationSolver, {}),
+    (HillClimbingSolver, {}),
+    (SimulatedAnnealingSolver, {}),
     ]
 
 def _get_solver_name(solver, args):
