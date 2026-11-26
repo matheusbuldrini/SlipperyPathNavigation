@@ -15,6 +15,7 @@ class ReplanningAStarSolver(AStarSolver):
         super().__init__(env_config)
         self.expected_position = None  # no move done yet, nothing to check
         self.replans = 0
+        self.first_plan_nodes = self.nodes_expanded  # to separate the first plan from the replans
         self.metrics["number_of_replans"] = 0
 
     def get_next_action(self) -> Literal[0, 1, 2, 3]:
@@ -40,9 +41,6 @@ class ReplanningAStarSolver(AStarSolver):
             self.actions = self.path_to_actions(self.get_path_to_node(solution))
         self.replans += 1
         if DEBUG: print(f"replan #{self.replans} from {self.get_position()}")
-        # nodes_expanded keeps adding up, so this is the total for the whole game
-        self.metrics["nodes_expanded"] = self.nodes_expanded
-        self.metrics["number_of_replans"] = self.replans
 
     def next_position(self, position, action):
         # where we land if we don't slip (walking into the edge = we stay)
@@ -52,3 +50,14 @@ class ReplanningAStarSolver(AStarSolver):
         elif action == 2: x = min(x + 1, self.map_width - 1)   # right
         elif action == 3: y = max(y - 1, 0)                    # up
         return (x, y)
+
+    def reset_for_new_game(self):
+        super().reset_for_new_game()  # gives back the first plan
+        self.expected_position = None
+
+    def after_all_games(self, number_of_games):
+        # we replan during the games, so report the average per game:
+        # nodes = first plan + average replanning nodes per game
+        replan_nodes = self.nodes_expanded - self.first_plan_nodes
+        self.metrics["nodes_expanded"] = self.first_plan_nodes + replan_nodes / number_of_games
+        self.metrics["number_of_replans"] = self.replans / number_of_games
